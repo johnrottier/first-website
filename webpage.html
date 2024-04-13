@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>John's Bouncing Ball</title>
+    <style>
+        body {
+            font-family: 'Comic Sans MS', cursive, sans-serif;
+            text-align: center;
+            overflow: hidden; /* Hide overflow to prevent scrollbar */
+        }
+        #ball {
+            width: 50px;
+            height: 50px;
+            background-color: red;
+            position: absolute;
+            border-radius: 50%; /* Make it circular */
+        }
+        #text {
+            position: absolute;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 24px;
+        }
+        #pauseButton {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            cursor: pointer;
+            padding: 10px 20px; /* Larger padding for bigger button */
+            font-size: 16px; /* Larger font size for better visibility */
+        }
+    </style>
+</head>
+<body>
+    <div id="ball"></div>
+    <div id="text">John just learned how to make a website</div>
+    <button id="pauseButton">Pause</button>
+
+    <script>
+        // Get the ball, text, and pause button elements
+        var ball = document.getElementById('ball');
+        var text = document.getElementById('text');
+        var pauseButton = document.getElementById('pauseButton');
+
+        // Set initial position and velocity
+        var x = window.innerWidth / 2 - ball.offsetWidth / 2; // Initial horizontal position
+        var y = window.innerHeight / 2 - ball.offsetHeight / 2; // Initial vertical position
+        var vx = 5; // Horizontal velocity
+        var vy = 5; // Vertical velocity
+        var isPaused = false;
+
+        // Array of font families
+        var fontFamilies = [
+            'Arial', 'Helvetica', 'Times New Roman', 'Courier New', 'Georgia',
+            'Verdana', 'Impact', 'Arial Black', 'Tahoma', 'Trebuchet MS',
+            'Lucida Console', 'Palatino Linotype', 'Garamond', 'Book Antiqua',
+            'Century Gothic', 'Franklin Gothic Medium', 'Cambria'
+        ];
+
+        var currentFontFamilyIndex = -1; // To store the index of the currently applied font family
+
+        // Function to update the position of the ball
+        function updateBallPosition() {
+            if (!isPaused) {
+                // Update position
+                x += vx;
+                y += vy;
+
+                // Reverse direction if ball hits walls
+                if (x + ball.offsetWidth >= window.innerWidth || x <= 0) {
+                    vx *= -1; // Change horizontal velocity direction
+                    ball.style.backgroundColor = getRandomColor(); // Change ball color
+                    changeFontFamily(); // Change font family
+                }
+                if (y + ball.offsetHeight >= window.innerHeight || y <= 0) {
+                    vy *= -1; // Change vertical velocity direction
+                    ball.style.backgroundColor = getRandomColor(); // Change ball color
+                    changeFontFamily(); // Change font family
+                }
+
+                // Update ball position
+                ball.style.left = x + 'px';
+                ball.style.top = y + 'px';
+            }
+
+            // Call the function again after a short delay
+            requestAnimationFrame(updateBallPosition);
+        }
+
+        // Function to generate random color
+        function getRandomColor() {
+            var letters = '0123456789ABCDEF';
+            var color = '#';
+            for (var i = 0; i < 6; i++) {
+                color += letters[Math.floor(Math.random() * 16)];
+            }
+            return color;
+        }
+
+        // Function to change font family randomly
+        function changeFontFamily() {
+            var randomIndex;
+            do {
+                randomIndex = Math.floor(Math.random() * fontFamilies.length);
+            } while (randomIndex === currentFontFamilyIndex); // Ensure font is different from the current one
+            var fontFamily = fontFamilies[randomIndex];
+            text.style.fontFamily = fontFamily;
+            currentFontFamilyIndex = randomIndex; // Update current font index
+        }
+
+        // Toggle pause state when the pause button is clicked
+        pauseButton.addEventListener('click', function() {
+            isPaused = !isPaused;
+            pauseButton.textContent = isPaused ? 'Resume' : 'Pause';
+        });
+
+        // Start the animation
+        updateBallPosition();
+    </script>
+</body>
+</html>
